@@ -140,9 +140,10 @@ Pull requests, issues, and suggestions are always welcome!
 
 ✅ GitHub Actions integration for linting and CI
 
-```bash
+
 Let me know if you'd like me to:
 
+```bash
 - Add a sample `.gitignore`, `ansible.cfg`, or GitHub Actions workflow
 - Rename the role or script for consistency across your repo
 - Include versioning or changelog sections for release tracking
