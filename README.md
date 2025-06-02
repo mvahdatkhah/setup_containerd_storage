@@ -97,31 +97,14 @@ Create site.yml at the root of the repo:
 ```bash
 ansible-playbook -i inventory.ini site.yml --tags setup_storage
 ```
+✅ What This Role Does
 
-⚙️ What This Role Does
-
-✅ Wipes existing partition table on /dev/sdb
-
-✅ Creates 4 partitions using parted
-
-✅ Initializes /dev/sdb1 as a physical volume
-
-✅ Creates a volume group and logical volume
-
-✅ Formats with ext4
-
-✅ Mounts to /var/lib/containerd
-
-✅ Adds an entry to /etc/fstab for persistence
+✔ Wipes the existing partition table on /dev/sdb ✔ Creates 4 partitions using parted ✔ Initializes /dev/sdb1 as a physical volume ✔ Creates a volume group and logical volume ✔ Formats with ext4 ✔ Mounts to /var/lib/containerd ✔ Adds an entry to /etc/fstab for persistence
 
 
-🧪 Safety Notes
+⚠️ Safety Considerations
 
-⚠️ This role will destroy all data on /dev/sdb.
-
-✅ Only run this on fresh/unused disks in controlled environments.
-
-✅ Always test in staging or virtual machines before production.
+🚨 This role will destroy all data on /dev/sdb. ✔ Only run on fresh/unused disks in controlled environments. ✔ Test in staging or virtual machines before using in production.
 
 
 📜 License
@@ -129,19 +112,14 @@ ansible-playbook -i inventory.ini site.yml --tags setup_storage
 MIT © 2025 Your Name
 🤝 Contributing
 
-Pull requests, issues, and suggestions are always welcome!
+Pull requests, issues, and suggestions are welcome!
+
+🔮 Future Improvements
+
+🛠 Add support for XFS and BTRFS filesystems 🧪 Integrate Molecule testing with Vagrant or Docker 🚀 Automate CI/CD using GitHub Actions
 
 
-🧭 Future Improvements
-
-✅ Add support for XFS and BTRFS filesystems
-
-✅ Molecule testing with Vagrant or Docker
-
-✅ GitHub Actions integration for linting and CI
-
-
-Let me know if you'd like me to:
+This version enhances readability, syntax consistency, and structural clarity while following best practices for markdown formatting. Let me know if you need further improvements! 🚀
 
 ```bash
 - Add a sample `.gitignore`, `ansible.cfg`, or GitHub Actions workflow
