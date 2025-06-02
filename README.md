@@ -101,18 +101,26 @@ ansible-playbook -i inventory.ini site.yml --tags setup_storage
 ⚙️ What This Role Does
 
 ✅ Wipes existing partition table on /dev/sdb
+
 ✅ Creates 4 partitions using parted
+
 ✅ Initializes /dev/sdb1 as a physical volume
+
 ✅ Creates a volume group and logical volume
+
 ✅ Formats with ext4
+
 ✅ Mounts to /var/lib/containerd
+
 ✅ Adds an entry to /etc/fstab for persistence
 
 
 🧪 Safety Notes
 
 ⚠️ This role will destroy all data on /dev/sdb.
+
 ✅ Only run this on fresh/unused disks in controlled environments.
+
 ✅ Always test in staging or virtual machines before production.
 
 📜 License
@@ -125,7 +133,9 @@ Pull requests, issues, and suggestions are always welcome!
 🧭 Future Improvements
 
 ✅ Add support for XFS and BTRFS filesystems
+
 ✅ Molecule testing with Vagrant or Docker
+
 ✅ GitHub Actions integration for linting and CI
 
 ```bash
