@@ -1,7 +1,7 @@
 ---
 - hosts:
-    - kubemasters
-    - kubenodes
+    - kubemasters_nodes
+    - kubenodes_nodes
 
   vars:
     - ansible_user: ansible  # ssh login user
