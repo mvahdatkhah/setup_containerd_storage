@@ -41,10 +41,15 @@ cd setup_containerd_storage
 Create a basic Ansible inventory file inventory.ini:
 
 ```bash
-[kubernetes_nodes]
-kubenode1 ansible_host=192.168.1.101
-kubenode2 ansible_host=192.168.1.102
-kubenode3 ansible_host=192.168.1.103
+[kubemasters_nodes]
+kubemaster1 ansible_host=192.168.1.101
+kubemaster1 ansible_host=192.168.1.102
+kubemaster1 ansible_host=192.168.1.103
+
+[kubenodes_nodes]
+kubenode1 ansible_host=192.168.1.103
+kubenode2 ansible_host=192.168.1.104
+kubenode3 ansible_host=192.168.1.105
 
 [all:vars]
 ansible_user=your_ssh_user
@@ -93,29 +98,22 @@ Create site.yml at the root of the repo:
 ansible-playbook -i inventory.ini site.yml --tags setup_storage
 ```
 
-⚙️ What It Does
+⚙️ What This Role Does
 
-    Wipes existing partitions on /dev/sdb
+✅ Wipes existing partition table on /dev/sdb
+✅ Creates 4 partitions using parted
+✅ Initializes /dev/sdb1 as a physical volume
+✅ Creates a volume group and logical volume
+✅ Formats with ext4
+✅ Mounts to /var/lib/containerd
+✅ Adds an entry to /etc/fstab for persistence
 
-    Creates 4 primary partitions
-
-    Creates a volume group on /dev/sdb1
-
-    Creates a logical volume using all VG free space
-
-    Formats it with ext4
-
-    Mounts it to /var/lib/containerd
-
-    Persists the mount using /etc/fstab
 
 🧪 Safety Notes
 
-    Only use on dedicated, unused disks (like /dev/sdb)
-
-    Never run on production hosts without full backups
-
-    Test in a lab or VM environment first    
+⚠️ This role will destroy all data on /dev/sdb.
+✅ Only run this on fresh/unused disks in controlled environments.
+✅ Always test in staging or virtual machines before production.
 
 📜 License
 
@@ -123,19 +121,19 @@ MIT © 2025 Your Name
 🤝 Contributing
 
 Pull requests, issues, and suggestions are always welcome!
-🧭 Future Plans
 
-    Add support for other filesystems (xfs, btrfs)
+🧭 Future Improvements
 
-    Make the role idempotent and test with Molecule
-
-    Add GitHub Actions CI for Ansible lint & syntax checks
+✅ Add support for XFS and BTRFS filesystems
+✅ Molecule testing with Vagrant or Docker
+✅ GitHub Actions integration for linting and CI
 
 ```bash
+Let me know if you'd like me to:
 
----
-
-Let me know if you want the full GitHub-ready repo boilerplate (`.gitignore`, `requirements.yml`, `ansible.cfg`, etc.).
+- Add a sample `.gitignore`, `ansible.cfg`, or GitHub Actions workflow
+- Rename the role or script for consistency across your repo
+- Include versioning or changelog sections for release tracking
 ```    
 
 
