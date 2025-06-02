@@ -1,0 +1,89 @@
+---
+- name: Sanity check to ensure correct disk
+  fail:
+    msg: "Disk {{ disk }} not found!"
+  when: not disk is match("^/dev/sd[b-z]$")
+
+- name: Unmount existing partitions if mounted
+  mount:
+    path: "/dev/{{ disk | basename }}{{ item.num }}"
+    state: absent
+  loop: "{{ partitions }}"
+  ignore_errors: true
+
+- name: Remove logical volume if exists
+  command: lvremove -f /dev/{{ vg_name }}/{{ lv_name }}
+  ignore_errors: true
+  tags: cleanup
+
+- name: Remove volume group if exists
+  command: vgremove -f {{ vg_name }}
+  ignore_errors: true
+  tags: cleanup
+
+- name: Remove physical volumes if they exist
+  command: pvremove -f {{ disk }}{{ item.num }}
+  loop: "{{ partitions }}"
+  ignore_errors: true
+  tags: cleanup
+
+- name: Wipe disk and create new partition table
+  command: parted {{ disk }} mklabel msdos --script
+
+- name: Create primary partitions
+  parted:
+    device: "{{ disk }}"
+    number: "{{ item.num }}"
+    state: present
+    part_type: primary
+    part_start: "{{ item.start }}"
+    part_end: "{{ item.end }}"
+  loop: "{{ partitions }}"
+
+- name: Reload partition table
+  command: partprobe {{ disk }}
+
+- name: Wait for partitions to be available
+  wait_for:
+    path: "{{ disk }}{{ item.num }}"
+    state: present
+    timeout: 10
+  loop: "{{ partitions }}"
+
+- name: Create physical volumes
+  command: pvcreate {{ disk }}{{ item.num }}
+  loop: "{{ partitions }}"
+
+- name: Create volume group
+  command: >
+    vgcreate {{ vg_name }} {{
+      partitions | map(attribute='num') | map('regex_replace', '^', disk) | join(' ')
+    }}
+  args:
+    creates: "/etc/lvm/backup/{{ vg_name }}"
+
+- name: Create logical volume using 100% of VG
+  command: lvcreate -l 100%FREE -n {{ lv_name }} {{ vg_name }}
+
+- name: Format the logical volume with ext4 and lazy init
+  command: mkfs.ext4 -E lazy_itable_init=1,lazy_journal_init=1 /dev/{{ vg_name }}/{{ lv_name }}
+
+- name: Create mount point directory
+  file:
+    path: "{{ mount_point }}"
+    state: directory
+
+- name: Mount the logical volume
+  mount:
+    path: "{{ mount_point }}"
+    src: "/dev/{{ vg_name }}/{{ lv_name }}"
+    fstype: "{{ filesystem_type }}"
+    opts: defaults
+    state: mounted
+
+- name: Persist mount in /etc/fstab
+  lineinfile:
+    path: /etc/fstab
+    line: "/dev/{{ vg_name }}/{{ lv_name }} {{ mount_point }} {{ filesystem_type }} defaults 0 2"
+    state: present
+...
