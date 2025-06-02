@@ -95,7 +95,7 @@ Create site.yml at the root of the repo:
 5️⃣ Run the Playbook 🎯
 
 ```bash
-ansible-playbook -i inventory.ini site.yml --tags setup_storage
+ansible-playbook -i inventory.ini setup_containerd_storage.yml
 ```
 ✅ What This Role Does
 
